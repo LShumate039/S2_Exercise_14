@@ -5,7 +5,7 @@
    Tutorial 12
    Tutorial Case
 
-   Author: 
+   Author: lennye shumate 
    Date:   
 
    Filename: bc_switch.js
@@ -16,4 +16,3 @@
    view and page view
    
 */
-
