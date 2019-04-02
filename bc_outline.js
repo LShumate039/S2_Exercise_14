@@ -48,15 +48,45 @@ function makeOutline() {
 
 function createList(source, outlineList) {
       var headings = ["H1", "H2", "H3", "H4", "H5", "H6"];
+      //previous level of the headings
+      var prevLevel = 0;
+      var headNum = 0;
       //lopp through all od the child nodes of source article 
       for (var n = source.firstChild; n !== null; n = n.nextSibling) {
             //examine only article headings 
             var headLevel = headings.indexOf(n.nodeName);
 
             if (headLevel !== -1) {
+                  headNum++;
+                  if (n.hasAttribute("id") === false) {
+                        n.setAttribute("id", "head" + headNum);
+                  }
                   var listElem = document.createElement("li");
-                  listElem.innerHTML = n.firstChild.nodeValue;
-                  outlineList.appendChild(listElem);
+                  //create hypertext links to the document headings 
+                  var linkElem = document.createElement("a");
+                  linkElem.innerHTML = n.innerHTML;
+                  linkElem.setAttribute("href", "#" + n.id);
+
+                  //append the hypertext link to the list item 
+                  listElem.appendChild(linkElem);
+
+                  if (headLevel === prevLevel) {
+                        outlineList.appendChild(listElem);
+                  } else if (headLevel > prevLevel) {
+                        var nestedList = document.createElement("ol");
+                        nestedList.appendChild(listElem);
+                        outlineList.lastChild.appendChild(nestedList);
+                        outlineList = nestedList;
+                  } else {
+                        //append the lst item to a list 
+                        var levelUp = prevLevel - headLevel;
+                        for (var i = 1; i <= levelUp; i++) {
+                              outlineList = outlineList.parentNode.parentNode;
+                        }
+                        outlineList.appendChild(listElem);
+                  }
+                  //update the value of prevLevel 
+                  prevLevel = headLevel;
             }
       }
 }
